@@ -1,32 +1,46 @@
 import React from 'react';
+import { MdMenu } from "react-icons/md";
 import {
   Navbar as RSNavbar,
   NavbarBrand,
   Nav,
-  NavItem,
-  NavLink,
+  UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  UncontrolledDropdown,
-} from 'reactstrap';
+  Button,
+} from "reactstrap";
 
-const Navbar = () => {
+const Navbar = ({ toggleSidebar }) => {
   return (
-    <RSNavbar color="white" light expand="md" className="shadow-sm p-3 mb-3 bg-white rounded">
-      <NavbarBrand href="/">
-        <span className="h4 mb-0 text-primary">MST BCA</span>
-      </NavbarBrand>
-      <Nav className="ms-auto" navbar>
-        <UncontrolledDropdown nav inNavbar>
+    <RSNavbar
+      color="white"
+      expand="md"
+      className="admin-navbar"
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <div className="d-flex align-items-center">
+        <Button color="white" className="d-md-none me-3" onClick={toggleSidebar}>
+          <MdMenu size={24} />
+        </Button>
+        <NavbarBrand href="/">
+          <span className="h4 mb-0 text-primary">Faqih Board</span>
+        </NavbarBrand>
+      </div>
+      <Nav navbar>
+        <UncontrolledDropdown nav inNavbar direction='down'>
           <DropdownToggle nav caret>
             <img
               src="https://picsum.photos/200"
               alt="User Avatar"
               className="rounded-circle me-2"
-              style={{ width: '30px', height: '30px' }}
+              style={{ width: "30px", height: "30px" }}
             />
-            Super Admin
+            <span className="d-none d-md-inline">Super Admin</span>
           </DropdownToggle>
           <DropdownMenu end>
             <DropdownItem>Profile</DropdownItem>

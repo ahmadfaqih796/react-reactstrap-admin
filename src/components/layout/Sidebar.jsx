@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Nav, NavItem, NavLink, Collapse } from 'reactstrap';
+import { Nav, NavItem, NavLink, Collapse, Button } from 'reactstrap';
 import { Link, useLocation } from 'react-router';
 import {
   MdDashboard,
@@ -8,9 +8,10 @@ import {
   MdSwapHoriz,
   MdAssignment,
   MdAddCircleOutline,
+  MdClose,
 } from 'react-icons/md';
 
-const Sidebar = () => {
+const Sidebar = ({isSidebarOpen, toggleSidebar}) => {
   const location = useLocation();
   const [isOpenNewMerchant, setIsOpenNewMerchant] = useState(false);
 
@@ -68,12 +69,12 @@ const Sidebar = () => {
     {
       label: 'New Merchant',
       icon: <MdAddCircleOutline className="me-2" />,
-      count: 7007,
+      count: 5,
       isDropdown: true,
       isOpen: isOpenNewMerchant,
       toggle: toggleNewMerchant,
       subItems: [
-        { to: '/merchants/all', text: 'All', count: 7007 },
+        { to: '/merchants/all', text: 'All', count: 2 },
         { to: '/merchants/kendala', text: 'Kendala', count: 9 },
         { to: '/merchants/approved', text: 'Approved', count: 6630 },
       ],
@@ -82,10 +83,16 @@ const Sidebar = () => {
 
   return (
     <div
-      style={{ width: '250px', backgroundColor: '#f8f9fa', minHeight: '100vh', padding: '15px' }}
-      className="border-end"
+      style={{ display: 'block', width: '250px', backgroundColor: '#f8f9fa', height: '100%', padding: '15px' }}
+      className={`admin-sidebar ${isSidebarOpen  ? 'show' : 'hide-on-mobile'}`}
     >
-      <div className="mb-4 text-center">
+      <div className="d-flex align-items-center justify-content-between pt-2 pb-3 mb-3 border-bottom d-md-none">
+        <h3 className="text-primary mb-1">Faqih Board</h3>
+        <Button close onClick={toggleSidebar}>
+          {/* <MdClose size={24} /> */}
+        </Button>
+      </div>
+      <div className="mb-4 text-center d-none d-md-block">
         <h3 className="text-primary">Faqih Board</h3>
       </div>
       <Nav vertical pills>
