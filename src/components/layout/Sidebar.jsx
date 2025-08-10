@@ -1,101 +1,206 @@
-import React, { useState } from 'react';
-import { Nav, NavItem, NavLink, Collapse, Button } from 'reactstrap';
-import { Link, useLocation } from 'react-router';
+import React from "react";
 import {
-  MdDashboard,
+  MdAddCircleOutline,
+  MdArrowDropDown,
+  MdAssignment,
   MdBarChart,
+  MdChevronRight,
+  MdDashboard,
   MdLocationOn,
   MdSwapHoriz,
-  MdAssignment,
-  MdAddCircleOutline,
-  MdClose,
-} from 'react-icons/md';
+} from "react-icons/md";
+import { Link, useLocation } from "react-router";
+import { Button, Collapse, Nav, NavItem, NavLink, Tooltip } from "reactstrap";
 
-const Sidebar = ({isSidebarOpen, toggleSidebar}) => {
+const Sidebar = ({
+  isSidebarOpen,
+  toggleSidebar,
+  isSidebarCollapsed,
+  toggleSidebarCollapse,
+}) => {
   const location = useLocation();
-  const [isOpenNewMerchant, setIsOpenNewMerchant] = useState(false);
+  const [openDropdowns, setOpenDropdowns] = React.useState([]);
+  const [tooltipOpen, setTooltipOpen] = React.useState({});
 
-  const toggleNewMerchant = () => setIsOpenNewMerchant(!isOpenNewMerchant);
+  const toggleDropdown = (label) => {
+    setOpenDropdowns((prev) => {
+      if (prev.includes(label)) {
+        return prev.filter((item) => item !== label);
+      } else {
+        return [...prev, label];
+      }
+    });
+  };
+
+  const toggleTooltip = (id) => {
+    setTooltipOpen({
+      ...tooltipOpen,
+      [id]: !tooltipOpen[id],
+    });
+  };
 
   const navItems = [
     {
-      to: '/',
+      to: "/",
       icon: <MdDashboard className="me-2" />,
-      text: 'Dashboard',
+      text: "Dashboard",
     },
     {
-      to: '/summary-productivity',
+      to: "/summary-productivity",
       icon: <MdBarChart className="me-2" />,
-      text: 'Summary Productivity',
+      text: "Summary Productivity",
     },
     {
-      to: '/merchants',
+      to: "/merchants",
       icon: <MdBarChart className="me-2" />,
-      text: 'Top Merchants',
+      text: "Top Merchants",
       count: 5,
     },
     {
-      to: '/map',
+      to: "/map",
       icon: <MdLocationOn className="me-2" />,
-      text: 'Map',
+      text: "Map",
     },
     {
-      to: '/return-distribution',
+      to: "/return-distribution",
       icon: <MdSwapHoriz className="me-2" />,
-      text: 'Return Distribution',
+      text: "Return Distribution",
     },
     {
-      to: '/distribution',
+      to: "/distribution",
       icon: <MdSwapHoriz className="me-2" />,
-      text: 'Distribution',
+      text: "Distribution",
     },
     {
-      to: '/distribution-jo',
-      icon: <MdAssignment className="me-2" />,
-      text: 'Distribution JO',
-    },
-    {
-      to: '/worklist',
-      icon: <MdAssignment className="me-2" />,
-      text: 'Worklist',
-      count: 61,
-    },
-    {
-      to: '/worklist-jo',
-      icon: <MdAssignment className="me-2" />,
-      text: 'Worklist JO',
-      count: 3,
-    },
-    {
-      label: 'New Merchant',
+      label: "New Merchant",
       icon: <MdAddCircleOutline className="me-2" />,
       count: 5,
       isDropdown: true,
-      isOpen: isOpenNewMerchant,
-      toggle: toggleNewMerchant,
       subItems: [
-        { to: '/merchants/all', text: 'All', count: 2 },
-        { to: '/merchants/kendala', text: 'Kendala', count: 9 },
-        { to: '/merchants/approved', text: 'Approved', count: 6630 },
+        { to: "/merchants/all", text: "All", count: 2, icon: <MdBarChart /> },
+        {
+          to: "/merchants/return",
+          text: "Return",
+          count: 9,
+          icon: <MdLocationOn />,
+        },
+        {
+          to: "/merchants/approved",
+          text: "Approved",
+          count: 6630,
+          icon: <MdAssignment />,
+        },
+      ],
+    },
+    {
+      label: "Merchant Visit",
+      icon: <MdAddCircleOutline className="me-2" />,
+      count: 5,
+      isDropdown: true,
+      subItems: [
+        {
+          to: "/merchants-visit/all",
+          text: "All",
+          count: 2,
+          icon: <MdBarChart />,
+        },
+        {
+          to: "/merchants-visit/return",
+          text: "Return",
+          count: 9,
+          icon: <MdLocationOn />,
+        },
+        {
+          to: "/merchants-visit/approved",
+          text: "Approved",
+          count: 6630,
+          icon: <MdAssignment />,
+        },
+      ],
+    },
+    {
+      label: "Menu 1",
+      icon: <MdAddCircleOutline className="me-2" />,
+      count: 5,
+      isDropdown: true,
+      subItems: [
+        {
+          to: "/menu/all",
+          text: "All",
+          count: 2,
+          icon: <MdBarChart />,
+        },
+        {
+          to: "/menu/return",
+          text: "Return",
+          count: 9,
+          icon: <MdLocationOn />,
+        },
+        {
+          to: "/menu/approved",
+          text: "Approved",
+          count: 6630,
+          icon: <MdAssignment />,
+        },
       ],
     },
   ];
 
+  React.useEffect(() => {
+    const currentPath = location.pathname;
+    let newActiveDropdown = null;
+
+    for (const item of navItems) {
+      if (item.isDropdown && item.subItems) {
+        if (item.subItems.some((subItem) => subItem.to === currentPath)) {
+          newActiveDropdown = item.label;
+          break;
+        }
+      }
+    }
+
+    if (newActiveDropdown && !openDropdowns.includes(newActiveDropdown)) {
+      setOpenDropdowns([newActiveDropdown]);
+    } else if (!newActiveDropdown && openDropdowns.length > 0) {
+      setOpenDropdowns([]);
+    }
+  }, [location.pathname]);
+
   return (
     <div
-      style={{ display: 'block', width: '250px', backgroundColor: '#f8f9fa', height: '100%', padding: '15px' }}
-      className={`admin-sidebar ${isSidebarOpen  ? 'show' : 'hide-on-mobile'}`}
+      className={[
+        "admin-sidebar",
+        isSidebarOpen ? "show" : "",
+        isSidebarCollapsed ? "collapsed" : "",
+      ].join(" ")}
     >
-      <div className="d-flex align-items-center justify-content-between pt-2 pb-3 mb-3 border-bottom d-md-none">
-        <h3 className="text-primary mb-1">Faqih Board</h3>
-        <Button close onClick={toggleSidebar}>
-          {/* <MdClose size={24} /> */}
+      {/* Header mobile */}
+      <div className="d-flex align-items-center justify-content-between p-3 border-bottom d-md-none">
+        <h3 className="text-primary mb-0">Faqih Board</h3>
+        <Button close onClick={toggleSidebar} />
+      </div>
+
+      {/* Header desktop */}
+      <div className="sidebar-header d-none d-md-flex">
+        <h3 className="text-primary">Faqih Board</h3>
+        <Button
+          color="white"
+          onClick={toggleSidebarCollapse}
+          className="toggle-btn"
+        >
+          <MdChevronRight
+            size={24}
+            style={{
+              transform: !isSidebarCollapsed
+                ? "rotate(180deg)"
+                : "rotate(0deg)",
+              transition: "transform 0.3s ease-in-out",
+            }}
+          />
         </Button>
       </div>
-      <div className="mb-4 text-center d-none d-md-block">
-        <h3 className="text-primary">Faqih Board</h3>
-      </div>
-      <Nav vertical pills>
+
+      <Nav vertical pills className="p-3">
         {navItems.map((item, index) => (
           <React.Fragment key={index}>
             {!item.isDropdown ? (
@@ -104,53 +209,111 @@ const Sidebar = ({isSidebarOpen, toggleSidebar}) => {
                   tag={Link}
                   to={item.to}
                   active={location.pathname === item.to}
-                  className="d-flex align-items-center"
+                  className="d-flex"
+                  onClick={window.innerWidth <= 768 ? toggleSidebar : undefined}
+                  id={`tooltip-${index}`}
                 >
-                  {item.icon}
-                  {item.text}
-                  {item.count && (
-                    <span className="badge bg-secondary ms-auto">{item.count}</span>
+                  <div className="icon">{item.icon}</div>
+                  <span className={[!isSidebarCollapsed && "ms-2"].join("")}>
+                    {item.text}
+                  </span>
+                  {!isSidebarCollapsed && item.count && (
+                    <span className="badge bg-secondary ms-auto">
+                      {item.count}
+                    </span>
                   )}
                 </NavLink>
+                {isSidebarCollapsed && (
+                  <Tooltip
+                    isOpen={tooltipOpen[`tooltip-${index}`]}
+                    target={`tooltip-${index}`}
+                    toggle={() => toggleTooltip(`tooltip-${index}`)}
+                    placement="right"
+                  >
+                    {item.text}
+                  </Tooltip>
+                )}
               </NavItem>
             ) : (
-              <NavItem>
+              <NavItem key={index}>
                 <NavLink
                   href="#"
-                  onClick={item.toggle}
+                  onClick={() => toggleDropdown(item.label)}
                   className="d-flex align-items-center"
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: "pointer" }}
+                  id={`tooltip-${index}`}
                 >
-                  {item.icon}
-                  {item.label}
-                  {item.count && (
-                    <span className="badge bg-secondary ms-auto">{item.count}</span>
+                  <div className="icon">{item.icon}</div>
+                  {!isSidebarCollapsed && (
+                    <span className="ms-2">{item.label}</span>
                   )}
-                  <span className="ms-auto">
-                    {item.isOpen ? (
-                      <i className="bi bi-chevron-up"></i>
-                    ) : (
-                      <i className="bi bi-chevron-down"></i>
-                    )}
+                  {!isSidebarCollapsed && item.count && (
+                    <span className="badge bg-secondary ms-auto">
+                      {item.count}
+                    </span>
+                  )}
+                  <span
+                    className="ms-auto"
+                    style={{
+                      transform: openDropdowns.includes(item.label)
+                        ? "rotate(180deg) translateY(-4px)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease-in-out",
+                    }}
+                  >
+                    <MdArrowDropDown />
                   </span>
                 </NavLink>
-                <Collapse isOpen={item.isOpen}>
-                  <Nav vertical className="ms-4">
+                {isSidebarCollapsed && (
+                  <Tooltip
+                    isOpen={tooltipOpen[`tooltip-${index}`]}
+                    target={`tooltip-${index}`}
+                    toggle={() => toggleTooltip(`tooltip-${index}`)}
+                    placement="right"
+                  >
+                    {item.label}
+                  </Tooltip>
+                )}
+                <Collapse isOpen={openDropdowns.includes(item.label)}>
+                  <Nav vertical className={isSidebarCollapsed ? "" : "ms-4"}>
                     {item.subItems.map((subItem, subIndex) => (
                       <NavItem key={subIndex}>
                         <NavLink
                           tag={Link}
                           to={subItem.to}
                           active={location.pathname === subItem.to}
-                          className="d-flex align-items-center"
+                          className={`d-flex align-items-center ${
+                            isSidebarCollapsed ? "justify-content-start" : ""
+                          }`}
+                          onClick={
+                            window.innerWidth <= 768 ? toggleSidebar : undefined
+                          }
+                          id={`sub-tooltip-${index}-${subIndex}`}
                         >
-                          {subItem.text}
-                          {subItem.count && (
+                          <span className="d-flex align-items-center">
+                            {subItem.icon}
+                            <span className="ms-2">{subItem.text}</span>
+                          </span>
+                          {!isSidebarCollapsed && subItem.count && (
                             <span className="badge bg-secondary ms-auto">
                               {subItem.count}
                             </span>
                           )}
                         </NavLink>
+                        {isSidebarCollapsed && (
+                          <Tooltip
+                            isOpen={
+                              tooltipOpen[`sub-tooltip-${index}-${subIndex}`]
+                            }
+                            target={`sub-tooltip-${index}-${subIndex}`}
+                            toggle={() =>
+                              toggleTooltip(`sub-tooltip-${index}-${subIndex}`)
+                            }
+                            placement="right"
+                          >
+                            {subItem.text}
+                          </Tooltip>
+                        )}
                       </NavItem>
                     ))}
                   </Nav>

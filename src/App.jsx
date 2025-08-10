@@ -1,12 +1,11 @@
-import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import LoginPage from "./pages/auth/LoginPage";
-import NotFoundpage from "./pages/NotFoundpage";
-import DashboardPage from "./pages/dashboard/DashboardPage";
-import MerchantListPage from "./pages/merchants/MerchantListPage";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router";
 import AdminLayout from "./components/layout/AdminLayout";
+import LoginPage from "./pages/auth/LoginPage";
+import DashboardPage from "./pages/dashboard/DashboardPage";
+import MerchantVisitReturnPage from "./pages/merchant-visit/MerchantVisitReturnPage";
+import MerchantListPage from "./pages/merchants/MerchantListPage";
+import MerchantReturnPage from "./pages/merchants/MerchantReturnPage";
+import NotFoundpage from "./pages/NotFoundpage";
 
 function App() {
   const isAuthenticated = true;
@@ -16,7 +15,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          
+
           <Route
             path="/"
             element={
@@ -29,6 +28,11 @@ function App() {
           >
             <Route index element={<DashboardPage />} />
             <Route path="merchants" element={<MerchantListPage />} />
+            <Route path="merchants/return" element={<MerchantReturnPage />} />
+            <Route
+              path="merchants-visit/return"
+              element={<MerchantVisitReturnPage />}
+            />
             {/* <Route path="merchants/:id" element={<MerchantDetailPage />} /> */}
           </Route>
 
