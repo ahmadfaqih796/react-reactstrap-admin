@@ -6,39 +6,43 @@ import MerchantVisitReturnPage from "./pages/merchant-visit/MerchantVisitReturnP
 import MerchantListPage from "./pages/merchants/MerchantListPage";
 import MerchantReturnPage from "./pages/merchants/MerchantReturnPage";
 import NotFoundpage from "./pages/NotFoundpage";
+import { PageProvider } from "./contexts/PageContext";
 
 function App() {
   const isAuthenticated = true;
 
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
+      <PageProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
 
-          <Route
-            path="/"
-            element={
-              isAuthenticated ? (
-                <AdminLayout />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          >
-            <Route index element={<DashboardPage />} />
-            <Route path="merchants" element={<MerchantListPage />} />
-            <Route path="merchants/return" element={<MerchantReturnPage />} />
             <Route
-              path="merchants-visit/return"
-              element={<MerchantVisitReturnPage />}
-            />
-            {/* <Route path="merchants/:id" element={<MerchantDetailPage />} /> */}
-          </Route>
+              path="/"
+              element={
+                isAuthenticated ? (
+                  <AdminLayout />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            >
+              <Route index element={<DashboardPage />} />
+              <Route path="merchants" element={<MerchantListPage />} />
+              <Route path="merchants/all" element={<MerchantListPage />} />
+              <Route path="merchants/return" element={<MerchantReturnPage />} />
+              <Route
+                path="merchants-visit/return"
+                element={<MerchantVisitReturnPage />}
+              />
+              {/* <Route path="merchants/:id" element={<MerchantDetailPage />} /> */}
+            </Route>
 
-          <Route path="*" element={<NotFoundpage />} />
-        </Routes>
-      </Router>
+            <Route path="*" element={<NotFoundpage />} />
+          </Routes>
+        </Router>
+      </PageProvider>
     </>
   );
 }

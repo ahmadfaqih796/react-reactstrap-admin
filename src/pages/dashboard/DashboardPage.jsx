@@ -1,9 +1,15 @@
-import React from 'react'
+import React from "react";
+import { usePageContext } from "../../contexts/PageContext";
 
 const DashboardPage = () => {
-  return (
-    <div>DashboardPage</div>
-  )
-}
+  const { setPage } = usePageContext();
+  React.useEffect(() => {
+    setPage({
+      title: "Dashboard",
+      subtitle: "Halaman utama dashboard",
+    });
+  }, [setPage]);
+  return <div>DashboardPage</div>;
+};
 
-export default DashboardPage
+export default DashboardPage;
