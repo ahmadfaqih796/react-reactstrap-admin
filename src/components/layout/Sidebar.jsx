@@ -175,8 +175,8 @@ const Sidebar = ({
       ].join(" ")}
     >
       {/* Header mobile */}
-      <div className="d-flex align-items-center justify-content-between p-3 border-bottom d-md-none">
-        <h3 className="text-primary mb-0">Faqih Board</h3>
+      <div className="sidebar-header d-md-none">
+        <h3 className="text-primary">Faqih Board xx</h3>
         <Button close onClick={toggleSidebar} />
       </div>
 
@@ -199,130 +199,145 @@ const Sidebar = ({
           />
         </Button>
       </div>
-
-      <Nav vertical pills className="p-3">
-        {navItems.map((item, index) => (
-          <React.Fragment key={index}>
-            {!item.isDropdown ? (
-              <NavItem>
-                <NavLink
-                  tag={Link}
-                  to={item.to}
-                  active={location.pathname === item.to}
-                  className="d-flex"
-                  onClick={window.innerWidth <= 768 ? toggleSidebar : undefined}
-                  id={`tooltip-${index}`}
-                >
-                  <div className="icon">{item.icon}</div>
-                  <span className={[!isSidebarCollapsed && "ms-2"].join("")}>
-                    {item.text}
-                  </span>
-                  {!isSidebarCollapsed && item.count && (
-                    <span className="badge bg-secondary ms-auto">
-                      {item.count}
+      <main
+        style={{
+          overflowY: "auto",
+          height: "calc(100vh - 70px)",
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgba(21, 12, 190, 0.2) transparent",
+          scrollBehavior: "smooth",
+        }}
+      >
+        <Nav vertical pills className="p-3">
+          {navItems.map((item, index) => (
+            <React.Fragment key={index}>
+              {!item.isDropdown ? (
+                <NavItem>
+                  <NavLink
+                    tag={Link}
+                    to={item.to}
+                    active={location.pathname === item.to}
+                    className="d-flex"
+                    onClick={
+                      window.innerWidth <= 768 ? toggleSidebar : undefined
+                    }
+                    id={`tooltip-${index}`}
+                  >
+                    <div className="icon">{item.icon}</div>
+                    <span className={[!isSidebarCollapsed && "ms-2"].join("")}>
+                      {item.text}
                     </span>
+                    {!isSidebarCollapsed && item.count && (
+                      <span className="badge bg-secondary ms-auto">
+                        {item.count}
+                      </span>
+                    )}
+                  </NavLink>
+                  {isSidebarCollapsed && (
+                    <Tooltip
+                      isOpen={tooltipOpen[`tooltip-${index}`]}
+                      target={`tooltip-${index}`}
+                      toggle={() => toggleTooltip(`tooltip-${index}`)}
+                      placement="right"
+                    >
+                      {item.text}
+                    </Tooltip>
                   )}
-                </NavLink>
-                {isSidebarCollapsed && (
-                  <Tooltip
-                    isOpen={tooltipOpen[`tooltip-${index}`]}
-                    target={`tooltip-${index}`}
-                    toggle={() => toggleTooltip(`tooltip-${index}`)}
-                    placement="right"
+                </NavItem>
+              ) : (
+                <NavItem key={index}>
+                  <NavLink
+                    href="#"
+                    onClick={() => toggleDropdown(item.label)}
+                    className="d-flex align-items-center"
+                    style={{ cursor: "pointer" }}
+                    id={`tooltip-${index}`}
                   >
-                    {item.text}
-                  </Tooltip>
-                )}
-              </NavItem>
-            ) : (
-              <NavItem key={index}>
-                <NavLink
-                  href="#"
-                  onClick={() => toggleDropdown(item.label)}
-                  className="d-flex align-items-center"
-                  style={{ cursor: "pointer" }}
-                  id={`tooltip-${index}`}
-                >
-                  <div className="icon">{item.icon}</div>
-                  {!isSidebarCollapsed && (
-                    <span className="ms-2">{item.label}</span>
-                  )}
-                  {!isSidebarCollapsed && item.count && (
-                    <span className="badge bg-secondary ms-auto">
-                      {item.count}
+                    <div className="icon">{item.icon}</div>
+                    {!isSidebarCollapsed && (
+                      <span className="ms-2">{item.label}</span>
+                    )}
+                    {!isSidebarCollapsed && item.count && (
+                      <span className="badge bg-secondary ms-auto">
+                        {item.count}
+                      </span>
+                    )}
+                    <span
+                      className="ms-auto"
+                      style={{
+                        transform: openDropdowns.includes(item.label)
+                          ? "rotate(180deg) translateY(-4px)"
+                          : "rotate(0deg)",
+                        transition: "transform 0.3s ease-in-out",
+                      }}
+                    >
+                      <MdArrowDropDown />
                     </span>
+                  </NavLink>
+                  {isSidebarCollapsed && (
+                    <Tooltip
+                      isOpen={tooltipOpen[`tooltip-${index}`]}
+                      target={`tooltip-${index}`}
+                      toggle={() => toggleTooltip(`tooltip-${index}`)}
+                      placement="right"
+                    >
+                      {item.label}
+                    </Tooltip>
                   )}
-                  <span
-                    className="ms-auto"
-                    style={{
-                      transform: openDropdowns.includes(item.label)
-                        ? "rotate(180deg) translateY(-4px)"
-                        : "rotate(0deg)",
-                      transition: "transform 0.3s ease-in-out",
-                    }}
-                  >
-                    <MdArrowDropDown />
-                  </span>
-                </NavLink>
-                {isSidebarCollapsed && (
-                  <Tooltip
-                    isOpen={tooltipOpen[`tooltip-${index}`]}
-                    target={`tooltip-${index}`}
-                    toggle={() => toggleTooltip(`tooltip-${index}`)}
-                    placement="right"
-                  >
-                    {item.label}
-                  </Tooltip>
-                )}
-                <Collapse isOpen={openDropdowns.includes(item.label)}>
-                  <Nav vertical className={isSidebarCollapsed ? "" : "ms-4"}>
-                    {item.subItems.map((subItem, subIndex) => (
-                      <NavItem key={subIndex}>
-                        <NavLink
-                          tag={Link}
-                          to={subItem.to}
-                          active={location.pathname === subItem.to}
-                          className={`d-flex align-items-center ${
-                            isSidebarCollapsed ? "justify-content-start" : ""
-                          }`}
-                          onClick={
-                            window.innerWidth <= 768 ? toggleSidebar : undefined
-                          }
-                          id={`sub-tooltip-${index}-${subIndex}`}
-                        >
-                          <span className="d-flex align-items-center">
-                            {subItem.icon}
-                            <span className="ms-2">{subItem.text}</span>
-                          </span>
-                          {!isSidebarCollapsed && subItem.count && (
-                            <span className="badge bg-secondary ms-auto">
-                              {subItem.count}
-                            </span>
-                          )}
-                        </NavLink>
-                        {isSidebarCollapsed && (
-                          <Tooltip
-                            isOpen={
-                              tooltipOpen[`sub-tooltip-${index}-${subIndex}`]
+                  <Collapse isOpen={openDropdowns.includes(item.label)}>
+                    <Nav vertical className={isSidebarCollapsed ? "" : "ms-4"}>
+                      {item.subItems.map((subItem, subIndex) => (
+                        <NavItem key={subIndex}>
+                          <NavLink
+                            tag={Link}
+                            to={subItem.to}
+                            active={location.pathname === subItem.to}
+                            className={`d-flex align-items-center ${
+                              isSidebarCollapsed ? "justify-content-start" : ""
+                            }`}
+                            onClick={
+                              window.innerWidth <= 768
+                                ? toggleSidebar
+                                : undefined
                             }
-                            target={`sub-tooltip-${index}-${subIndex}`}
-                            toggle={() =>
-                              toggleTooltip(`sub-tooltip-${index}-${subIndex}`)
-                            }
-                            placement="right"
+                            id={`sub-tooltip-${index}-${subIndex}`}
                           >
-                            {subItem.text}
-                          </Tooltip>
-                        )}
-                      </NavItem>
-                    ))}
-                  </Nav>
-                </Collapse>
-              </NavItem>
-            )}
-          </React.Fragment>
-        ))}
-      </Nav>
+                            <span className="d-flex align-items-center">
+                              {subItem.icon}
+                              <span className="ms-2">{subItem.text}</span>
+                            </span>
+                            {!isSidebarCollapsed && subItem.count && (
+                              <span className="badge bg-secondary ms-auto">
+                                {subItem.count}
+                              </span>
+                            )}
+                          </NavLink>
+                          {isSidebarCollapsed && (
+                            <Tooltip
+                              isOpen={
+                                tooltipOpen[`sub-tooltip-${index}-${subIndex}`]
+                              }
+                              target={`sub-tooltip-${index}-${subIndex}`}
+                              toggle={() =>
+                                toggleTooltip(
+                                  `sub-tooltip-${index}-${subIndex}`
+                                )
+                              }
+                              placement="right"
+                            >
+                              {subItem.text}
+                            </Tooltip>
+                          )}
+                        </NavItem>
+                      ))}
+                    </Nav>
+                  </Collapse>
+                </NavItem>
+              )}
+            </React.Fragment>
+          ))}
+        </Nav>
+      </main>
     </div>
   );
 };

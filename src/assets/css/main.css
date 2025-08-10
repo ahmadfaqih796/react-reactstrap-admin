@@ -84,6 +84,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
+  height: var(--navbar-height);
   border-bottom: 1px solid #dee2e6;
   transition: all 0.3s ease-in-out;
 }
